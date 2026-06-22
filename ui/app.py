@@ -103,7 +103,8 @@ if search_btn and account_id:
         st.subheader("🤖 AI Risk Explanation")
         with st.spinner("Generating SAR narrative..."):
             exp_resp    = requests.get(f"{API_URL}/account/{account_id}/explanation")
-            explanation = exp_resp.json().get("explanation", "Could not generate explanation.")
+            exp_data    = exp_resp.json() if exp_resp.status_code == 200 else {}
+            explanation = exp_data.get("explanation", "Could not generate explanation.")
         st.write(explanation)
 
         st.divider()

@@ -4,6 +4,8 @@ import pandas as pd
 import torch
 import sys
 import os
+import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 base_dir = os.path.dirname(__file__)
 for folder in ["model", "llm", "graph"]:
@@ -12,8 +14,6 @@ for folder in ["model", "llm", "graph"]:
 from gnn_model import FraudDetector
 from explainer import generate_risk_explanation, answer_investigator_question, get_account_summary
 from visualize import render_network_html
-from sklearn.preprocessing import StandardScaler
-import numpy as np
 
 app = FastAPI(title="Fraud Investigation Copilot API")
 
@@ -24,7 +24,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Define BASE path and load data once at startup ──
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 feature_columns = [
@@ -40,10 +39,10 @@ normalizer     = StandardScaler()
 raw_features   = normalizer.fit_transform(raw_features)
 
 model = FraudDetector(in_channels=len(feature_columns))
-model.load_state_dict(torch.load(os.path.join(BASE, "model", "fraud_gnn.pt"),
-                      weights_only=True))
+model.load_state_dict(torch.load(
+    os.path.join(BASE, "model", "fraud_gnn.pt"), weights_only=True
+))
 model.eval()
-# ────────────────────────────────────────────────────
 
 
 def get_risk_score(account_id):
@@ -61,7 +60,7 @@ def get_risk_score(account_id):
     edge_index = torch.tensor(edge_list, dtype=torch.long).t().contiguous()
     x = torch.tensor(raw_features, dtype=torch.float)
     with torch.no_grad():
-        out   = model(x, edge_index)
+        out = model(x, edge_index)
         probs = torch.softmax(out, dim=1)
     idx = account_id_to_number[account_id]
     return round(probs[idx][1].item(), 4)
@@ -85,3 +84,27 @@ def account_explanation(account_id: str):
     score = get_risk_score(account_id)
     if score is None:
         return {"error": "Account not found"}
+    explanation = generate_risk_explanation(account_id, score)
+    return {"account_id": account_id, "risk_score": score, "explanation": explanation}
+
+
+@app.get("/account/{account_id}/summary")
+def account_summary(account_id: str):
+    summary = get_account_summary(account_id)
+    return summary
+
+
+@app.post("/account/{account_id}/chat")
+def account_chat(account_id: str, question: str):
+    score = get_risk_score(account_id)
+    answer = answer_investigator_question(account_id, question, score)
+    return {"account_id": account_id, "question": question, "answer": answer}
+
+
+@app.get("/account/{account_id}/network")
+def account_network(account_id: str):
+    path = render_network_html(
+        account_id,
+        output_path=os.path.join(BASE, "ui", f"network_{account_id}.html")
+    )
+    return {"account_id": account_id, "network_file": path}
