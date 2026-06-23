@@ -28,8 +28,7 @@ Transaction Data → GNN Fraud Detection → Risk Explanation → Graph Analysis
 | Reports | ReportLab |
 
 ## Results
-- 95% accuracy on fraud detection
-- 100% recall on fraud accounts (zero missed fraudsters)
+- Achieved 95% accuracy and perfect recall on a synthetic AML transaction dataset generated to simulate money laundering behaviors.
 - Investigation time reduced from 2–4 hours to under 60 seconds
 
 ## Project Structure
