@@ -11,7 +11,7 @@ Transaction Data → GNN Fraud Detection → Risk Explanation → Graph Analysis
 
 ## Features
 - **GNN Fraud Detection** — GraphSAGE model that learns fraud patterns from transaction network structure, detecting money rings, structuring, and layering that traditional ML misses
-- **AI Risk Explanation** — Claude LLM generates professional compliance narratives explaining exactly why an account is suspicious
+- **AI Risk Explanation** — Gemini LLM generates professional compliance narratives explaining exactly why an account is suspicious
 - **Transaction Graph Visualization** — Interactive network map showing money flow and suspicious clusters
 - **Investigator Chat** — Analysts query transaction data in plain English and get instant answers
 - **SAR Report Generation** — One-click PDF export of the complete investigation dossier
