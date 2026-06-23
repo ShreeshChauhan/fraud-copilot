@@ -21,7 +21,7 @@ Transaction Data → GNN Fraud Detection → Risk Explanation → Graph Analysis
 | Layer | Technology |
 |---|---|
 | Graph ML | PyTorch Geometric, GraphSAGE |
-| LLM | Claude API (Anthropic) |
+| LLM | Gemini API (Google) |
 | Data | Python, Pandas, NetworkX |
 | Backend | FastAPI |
 | Frontend | Streamlit |
