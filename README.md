@@ -40,7 +40,7 @@ fraud-copilot/
 
 ├── model/             # GNN fraud detection model
 
-├── llm/               # Claude API explanation + chat layer
+├── llm/               # Gemini API explanation + chat layer
 
 ├── api/               # FastAPI backend
 
@@ -59,7 +59,7 @@ pip install -r requirements.txt
 ```
 
 Add your API key to `.env`:
-ANTHROPIC_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
 
 Run the app:
 ```bash
